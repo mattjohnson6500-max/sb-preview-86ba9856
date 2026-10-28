@@ -1,0 +1,433 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Amy's Second Brain</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a working dashboard. Sticky header with three tabs; summary first, detail below; single column that widens to two where it helps. */
+:root{
+  --bg:#F3F6F8; --surface:#FFFFFF; --ink:#16202B; --muted:#5A6774; --line:#D9E0E6;
+  --accent:#2C5A86; --accent-soft:#E2EBF4;
+  --good:#2C7A4D; --good-soft:#E1F1E7; --warn:#A8650A; --warn-soft:#FAEED8; --idle:#6B7783; --idle-soft:#ECEFF2;
+  --display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1317; --surface:#161E25; --ink:#E5EBF0; --muted:#94A2AF; --line:#28333D;
+  --accent:#86B2DD; --accent-soft:#1B2B3A; --good:#6EC594; --good-soft:#16301F; --warn:#E3A853; --warn-soft:#382A13; --idle:#9AA6B1; --idle-soft:#212A32; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1317; --surface:#161E25; --ink:#E5EBF0; --muted:#94A2AF; --line:#28333D;
+  --accent:#86B2DD; --accent-soft:#1B2B3A; --good:#6EC594; --good-soft:#16301F; --warn:#E3A853; --warn-soft:#382A13; --idle:#9AA6B1; --idle-soft:#212A32; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.5;margin:0}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--surface)}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--surface);border-bottom:1px solid var(--line)}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 24px;padding-block:14px 0}
+.brand h1{font-family:var(--display);font-weight:700;font-size:1.35rem;letter-spacing:-.01em;margin:0}
+.brand p{margin:0;color:var(--muted);font-size:.85rem}
+nav{display:flex;gap:4px;overflow-x:auto}
+nav a{font-family:var(--display);font-weight:600;font-size:.95rem;color:var(--muted);text-decoration:none;padding:10px 12px 12px;border-bottom:3px solid transparent;white-space:nowrap}
+nav a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--accent)}
+nav a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.sample{background:var(--warn-soft);color:var(--ink);font-size:.85rem;padding-block:8px}
+.sample b{color:var(--warn)}
+main{padding-block:24px 64px}
+section[hidden]{display:none}
+h2{font-family:var(--display);font-weight:700;font-size:1.25rem;margin:0 0 4px;text-wrap:balance}
+h3{font-family:var(--display);font-weight:600;font-size:1rem;margin:0;text-wrap:balance}
+.lede{color:var(--muted);margin:0 0 20px;max-width:65ch}
+.eyebrow{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.mono{font-family:var(--mono);font-size:.85em}
+.num{font-variant-numeric:tabular-nums}
+
+/* summary */
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.stat .v{font-family:var(--display);font-weight:700;font-size:1.7rem;font-variant-numeric:tabular-nums;line-height:1.1}
+.stat.you .v{color:var(--accent)} .stat.win .v{color:var(--good)}
+.trend{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:24px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 24px;align-items:end}
+.trend p{margin:0;color:var(--muted);font-size:.9rem;max-width:60ch}
+.trend strong{color:var(--ink)}
+.strip{grid-column:1/-1;overflow-x:auto}
+.strip svg{display:block}
+.legend{display:flex;gap:16px;font-size:.8rem;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+
+/* filters */
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.chip{font:inherit;font-size:.85rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:5px 12px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.chip .c{color:var(--muted);margin-left:4px;font-variant-numeric:tabular-nums}
+.chip[aria-pressed="true"] .c{color:inherit;opacity:.75}
+input[type=search]{font:inherit;font-size:.9rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:8px 12px;width:min(100%,320px)}
+
+/* request list */
+.list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:8px;background:var(--surface);overflow:hidden}
+.req{border-top:1px solid var(--line)} .req:first-child{border-top:0}
+.req summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:4px 16px;align-items:center;padding:12px 16px}
+.req summary::-webkit-details-marker{display:none}
+.req summary:hover{background:var(--bg)}
+.req .id{font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.req .t{font-weight:500;min-width:0}
+.req .meta{grid-column:2/3;color:var(--muted);font-size:.82rem;display:flex;flex-wrap:wrap;gap:4px 12px}
+.req .right{grid-row:1/3;grid-column:3;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.pill{font-size:.75rem;font-weight:600;border-radius:999px;padding:3px 10px;white-space:nowrap}
+.p-gather{background:var(--idle-soft);color:var(--idle)}
+.p-review{background:var(--accent-soft);color:var(--accent)}
+.p-changes{background:var(--warn-soft);color:var(--warn)}
+.p-approved{background:var(--good-soft);color:var(--good)}
+.rounds{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.rounds.win{color:var(--good);font-weight:600}
+.detail{padding:4px 16px 16px 96px;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px 24px;font-size:.88rem}
+.detail ul{margin:4px 0 0;padding-left:18px}
+.detail .none{color:var(--muted)}
+.empty{padding:28px 16px;color:var(--muted);text-align:center}
+
+/* brain */
+.brain-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.group{margin-bottom:24px}
+.group-h{display:flex;align-items:baseline;gap:8px;margin-bottom:8px}
+.group-h .c{color:var(--muted);font-size:.85rem;font-variant-numeric:tabular-nums}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:6px;min-width:0}
+.card p{margin:0;font-size:.88rem;color:var(--muted)}
+.card .src{font-size:.78rem;color:var(--muted)}
+.card .src b{color:var(--ink);font-weight:500}
+.card .dates{display:flex;gap:12px;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums;flex-wrap:wrap}
+.stale{color:var(--warn);font-weight:600}
+.lessons{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.lessons li{display:grid;grid-template-columns:96px minmax(0,1fr);gap:4px 16px;padding:10px 16px;border-top:1px solid var(--line)}
+.lessons li:first-child{border-top:0}
+.lessons .d{font-size:.8rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.scope{display:inline-block;font-size:.72rem;background:var(--accent-soft);color:var(--accent);border-radius:4px;padding:1px 6px;margin-right:6px;font-weight:600}
+
+/* how it works */
+.rules{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:0 0 32px;padding:0;list-style:none;counter-reset:r}
+.rules li{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;counter-increment:r}
+.rules li::before{content:"Rule " counter(r);display:block;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:4px}
+.rules p{margin:6px 0 0;font-size:.88rem;color:var(--muted)}
+.loop{margin:0 0 32px;overflow-x:auto}
+.loop svg{display:block;min-width:720px;width:100%;height:auto}
+.walk{display:grid;grid-template-columns:240px minmax(0,1fr);gap:16px;align-items:start}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px;counter-reset:s}
+.steps button{font:inherit;width:100%;text-align:left;background:none;border:0;border-left:3px solid var(--line);color:var(--muted);padding:8px 12px;cursor:pointer;font-size:.9rem}
+.steps button[aria-current="step"]{border-left-color:var(--accent);color:var(--ink);font-weight:600;background:var(--surface)}
+.chat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px;min-height:260px}
+.msg{max-width:78%;padding:10px 14px;border-radius:12px;font-size:.92rem}
+.msg.amy{align-self:flex-end;background:var(--accent);color:var(--surface);border-bottom-right-radius:4px}
+.msg.cl{align-self:flex-start;background:var(--bg);border:1px solid var(--line);border-bottom-left-radius:4px}
+.msg .who{display:block;font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;opacity:.75;margin-bottom:2px;font-weight:600}
+.note{font-size:.82rem;color:var(--muted);border-top:1px dashed var(--line);padding-top:10px;margin-top:auto}
+.nav-steps{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.btn{font:inherit;font-weight:600;font-size:.88rem;border-radius:6px;padding:7px 14px;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.btn:disabled{opacity:.4;cursor:default}
+
+@media (max-width:720px){
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .walk{grid-template-columns:minmax(0,1fr)}
+  .steps{flex-direction:row;overflow-x:auto}
+  .steps button{border-left:0;border-bottom:3px solid var(--line);white-space:nowrap}
+  .steps button[aria-current="step"]{border-bottom-color:var(--accent)}
+  .detail{padding-left:16px}
+  .req summary{grid-template-columns:minmax(0,1fr) auto}
+  .req .id{grid-column:1} .req .t{grid-column:1} .req .meta{grid-column:1}
+  .req .right{grid-row:1/4;grid-column:2}
+  .msg{max-width:92%}
+  .lessons li{grid-template-columns:minmax(0,1fr)}
+}
+@media (prefers-reduced-motion:no-preference){.chat .msg{animation:in .25s ease-out both}@keyframes in{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}}
+</style>
+
+<script>
+window.BRAIN_DATA = {
+  owner: "Amy Baker",
+  updated: "2026-10-28",
+  requests: [
+    {id:"R-0001",date:"2026-09-02",task:"File the Corvane product binder",type:"Filing",project:"",client:"",status:"Approved",sourcesUsed:[],sourcesAdded:["Corvane AirSeal 40 data sheet (2025)","Corvane installation guide"],changes:1,firstTryWin:false,approved:"2026-09-02",output:"Wiki/Products/Corvane - AirSeal 40.md",lessons:["Record the test method next to every performance value"]},
+    {id:"R-0002",date:"2026-09-03",task:"Draft 07 27 26 Fluid-Applied Membrane Air Barriers",type:"Spec section",project:"Riverside Branch Library",client:"Harbor & Vale Architects",status:"Approved",sourcesUsed:["Corvane AirSeal 40 data sheet (2025)"],sourcesAdded:["Harbor & Vale office master 07 27 26"],changes:3,firstTryWin:false,approved:"2026-09-05",output:"Outputs/07 27 26 Riverside Library draft.docx",lessons:["Harbor & Vale: remove Related Sections paragraphs","Write in streamlined imperative language, no \"shall\""]},
+    {id:"R-0003",date:"2026-09-08",task:"Summarize OAC meeting #6",type:"Meeting notes",project:"Elm Street Lofts",client:"Northline Design Studio",status:"Approved",sourcesUsed:[],sourcesAdded:["OAC #6 notes (dictated)"],changes:1,firstTryWin:false,approved:"2026-09-08",output:"Wiki/Meetings/2026-09-08 Elm Street Lofts OAC 6.md",lessons:["List my action items first"]},
+    {id:"R-0004",date:"2026-09-10",task:"Check hardware schedule against 08 71 00",type:"Door hardware",project:"Fairview Community Center",client:"Harbor & Vale Architects",status:"Approved",sourcesUsed:["08 71 00 Fairview draft","Lakeshore mortise lock data sheet (2024)"],sourcesAdded:["Hardware schedule rev 2"],changes:2,firstTryWin:false,approved:"2026-09-12",output:"Outputs/Fairview hardware check.md",lessons:["Always flag electrified hardware for coordination with access control"]},
+    {id:"R-0005",date:"2026-09-15",task:"Start code analysis worksheet",type:"Code study",project:"Fairview Community Center",client:"Harbor & Vale Architects",status:"Approved",sourcesUsed:["Fairview project page"],sourcesAdded:["Floor plans, schematic design set"],changes:2,firstTryWin:false,approved:"2026-09-17",output:"Outputs/Fairview code analysis.xlsx",lessons:["Name the local code edition at the top of every worksheet"]},
+    {id:"R-0006",date:"2026-09-17",task:"Reply to contractor about sealant RFI",type:"Email",project:"Elm Street Lofts",client:"Northline Design Studio",status:"Approved",sourcesUsed:["RFI 012"],sourcesAdded:[],changes:1,firstTryWin:false,approved:"2026-09-17",output:"Outputs/Email - RFI 012 reply.md",lessons:["Keep emails short and sign off with first name only"]},
+    {id:"R-0007",date:"2026-09-22",task:"Log RFI 014, sealant joint width",type:"CA item",project:"Elm Street Lofts",client:"Northline Design Studio",status:"Approved",sourcesUsed:["07 92 00 Elm Street draft"],sourcesAdded:["RFI 014"],changes:0,firstTryWin:true,approved:"2026-09-22",output:"Wiki/Projects/Elm Street Lofts.md (CA log)",lessons:[]},
+    {id:"R-0008",date:"2026-09-24",task:"Draft 08 71 00 Door Hardware",type:"Spec section",project:"Riverside Branch Library",client:"Harbor & Vale Architects",status:"Approved",sourcesUsed:["Harbor & Vale client page","Lakeshore mortise lock data sheet (2024)","Door Hardware lessons"],sourcesAdded:["Riverside hardware sets from architect"],changes:1,firstTryWin:false,approved:"2026-09-25",output:"Outputs/08 71 00 Riverside Library draft.docx",lessons:["List approved equals alphabetically"]},
+    {id:"R-0009",date:"2026-09-29",task:"Log review comments on 50% CD set",type:"Drawing review",project:"Elm Street Lofts",client:"Northline Design Studio",status:"Approved",sourcesUsed:["Northline client page"],sourcesAdded:["50% CD set"],changes:1,firstTryWin:false,approved:"2026-09-30",output:"Outputs/Elm Street 50% CD review.xlsx",lessons:["Northline: use their review matrix with a response column"]},
+    {id:"R-0010",date:"2026-10-01",task:"Teaching note: air barrier continuity at roof-to-wall",type:"Teaching note",project:"",client:"",status:"Approved",sourcesUsed:["Building Enclosure: roof-to-wall transitions"],sourcesAdded:[],changes:0,firstTryWin:true,approved:"2026-10-01",output:"Wiki/Teaching Notes/Air barrier continuity at roof-to-wall.md",lessons:[]},
+    {id:"R-0011",date:"2026-10-06",task:"Summarize OAC meeting #8",type:"Meeting notes",project:"Elm Street Lofts",client:"Northline Design Studio",status:"Approved",sourcesUsed:[],sourcesAdded:["OAC #8 notes (pasted)"],changes:0,firstTryWin:true,approved:"2026-10-06",output:"Wiki/Meetings/2026-10-06 Elm Street Lofts OAC 8.md",lessons:[]},
+    {id:"R-0012",date:"2026-10-08",task:"Compare substitute air barrier to basis of design",type:"Substitution review",project:"Riverside Branch Library",client:"Harbor & Vale Architects",status:"Approved",sourcesUsed:["Corvane AirSeal 40 data sheet (2025)","07 27 26 Riverside draft"],sourcesAdded:["Brightwall VaporGuard SA data sheet","Brightwall ASTM E2357 test report"],changes:1,firstTryWin:false,approved:"2026-10-09",output:"Outputs/Riverside air barrier substitution.md",lessons:["Check sealant compatibility on every air barrier substitution"]},
+    {id:"R-0013",date:"2026-10-13",task:"Email to architect: substitution recommendation",type:"Email",project:"Riverside Branch Library",client:"Harbor & Vale Architects",status:"Approved",sourcesUsed:["R-0012 comparison"],sourcesAdded:[],changes:0,firstTryWin:true,approved:"2026-10-13",output:"Outputs/Email - Riverside substitution.md",lessons:[]},
+    {id:"R-0014",date:"2026-10-19",task:"Hardware sets for amenity level",type:"Door hardware",project:"Elm Street Lofts",client:"Northline Design Studio",status:"Approved",sourcesUsed:["Door Hardware lessons","Lakeshore mortise lock data sheet (2024)"],sourcesAdded:["Amenity level door schedule"],changes:0,firstTryWin:true,approved:"2026-10-20",output:"Outputs/Elm Street amenity hardware sets.md",lessons:[]},
+    {id:"R-0015",date:"2026-10-22",task:"Guide spec outline for continuous hinges",type:"Guide spec",project:"",client:"Lakeshore Hardware Co.",status:"Changes requested",sourcesUsed:["Lakeshore continuous hinge data sheet (2023)"],sourcesAdded:["Lakeshore product catalog 2026"],changes:1,firstTryWin:false,approved:"",output:"Outputs/Lakeshore 08 71 00 guide spec outline.docx",lessons:["Guide specs: editor's notes go before each paragraph, not after"]},
+    {id:"R-0016",date:"2026-10-26",task:"Compare submitted roof insulation to basis of design",type:"Substitution review",project:"Fairview Community Center",client:"Harbor & Vale Architects",status:"Approved",sourcesUsed:["07 22 16 Fairview draft","Substitution review lessons"],sourcesAdded:["Submitted polyiso data sheet"],changes:0,firstTryWin:true,approved:"2026-10-27",output:"Outputs/Fairview roof insulation substitution.md",lessons:[]},
+    {id:"R-0017",date:"2026-10-27",task:"Occupant load and egress check, meeting room",type:"Code study",project:"Riverside Branch Library",client:"Harbor & Vale Architects",status:"Ready for review",sourcesUsed:["Riverside project page","Code study lessons"],sourcesAdded:["Meeting room furniture plan"],changes:0,firstTryWin:false,approved:"",output:"Outputs/Riverside meeting room egress.md",lessons:[]},
+    {id:"R-0018",date:"2026-10-28",task:"Draft 09 51 13 Acoustical Panel Ceilings",type:"Spec section",project:"Elm Street Lofts",client:"Northline Design Studio",status:"Gathering sources",sourcesUsed:["Northline client page"],sourcesAdded:[],changes:0,firstTryWin:false,approved:"",output:"",lessons:[]}
+  ],
+  brain: [
+    {title:"Harbor & Vale Architects",category:"Clients",summary:"Office master in their own Word template. No Related Sections. Prefer streamlined language.",sources:["Harbor & Vale office master 07 27 26","Your corrections"],updated:"2026-10-09",verified:""},
+    {title:"Northline Design Studio",category:"Clients",summary:"Comments go in their review matrix with a response column. Phased CD sets.",sources:["Your corrections"],updated:"2026-09-30",verified:""},
+    {title:"Riverside Branch Library",category:"Projects",summary:"Library, Harbor & Vale. You're the spec consultant. CD phase. Meeting room egress open.",sources:["Kickoff notes","Floor plans"],updated:"2026-10-27",verified:""},
+    {title:"Elm Street Lofts",category:"Projects",summary:"Multi-family, Northline. CA phase. CA log has 3 RFIs and 1 substitution.",sources:["OAC #6 and #8 notes","RFI 012, 014"],updated:"2026-10-20",verified:""},
+    {title:"Fairview Community Center",category:"Projects",summary:"Community center, Harbor & Vale. Code worksheet started. Roof insulation substitution approved.",sources:["Schematic design set"],updated:"2026-10-27",verified:""},
+    {title:"07 27 26 Fluid-Applied Membrane Air Barriers",category:"Spec Sections",summary:"Basis of design Corvane AirSeal 40. Assembly testing required. Sealant compatibility check added.",sources:["Corvane AirSeal 40 data sheet (2025)","R-0012 lesson"],updated:"2026-10-09",verified:""},
+    {title:"08 71 00 Door Hardware",category:"Spec Sections",summary:"Approved equals listed alphabetically. Electrified hardware coordinated with access control.",sources:["Riverside hardware sets","Your corrections"],updated:"2026-09-25",verified:""},
+    {title:"09 51 13 Acoustical Panel Ceilings",category:"Spec Sections",summary:"Started for Elm Street Lofts. Waiting on the architect's ceiling plan and preferred product.",sources:[],updated:"2026-10-28",verified:""},
+    {title:"Corvane - AirSeal 40",category:"Products",summary:"Fluid-applied air barrier. Assembly-tested. 10-year material warranty.",sources:["Corvane AirSeal 40 data sheet (2025)","Corvane installation guide"],updated:"2026-10-09",verified:"2025-03-14"},
+    {title:"Brightwall - VaporGuard SA",category:"Products",summary:"Self-adhered membrane submitted as a substitute. Tested at lower pressure than specified. Warranty excludes labor.",sources:["Brightwall data sheet","Brightwall ASTM E2357 test report"],updated:"2026-10-09",verified:"2026-06-02"},
+    {title:"Lakeshore - Series 9 Mortise Lock",category:"Products",summary:"Grade 1 mortise lock. Electrified options available.",sources:["Lakeshore mortise lock data sheet (2024)"],updated:"2026-10-20",verified:"2024-01-18"},
+    {title:"Lakeshore - CH200 Continuous Hinge",category:"Products",summary:"Geared continuous hinge. Used in the guide spec engagement.",sources:["Lakeshore continuous hinge data sheet (2023)"],updated:"2026-10-22",verified:"2023-05-02"},
+    {title:"Corvane Building Products",category:"Manufacturers",summary:"Air barriers and flashings. Tech support has been responsive.",sources:["Corvane binder"],updated:"2026-09-02",verified:""},
+    {title:"Lakeshore Hardware Co.",category:"Manufacturers",summary:"Locks and hinges. Also a guide spec client.",sources:["Lakeshore product catalog 2026"],updated:"2026-10-22",verified:""},
+    {title:"ASTM E2357",category:"Standards & Codes",summary:"Air leakage of air barrier assemblies. Edition year to confirm on each report.",sources:["Brightwall ASTM E2357 test report"],updated:"2026-10-09",verified:""},
+    {title:"NFPA 80",category:"Standards & Codes",summary:"Fire doors and other opening protectives. Referenced in 08 71 00.",sources:["08 71 00 Riverside draft"],updated:"2026-09-25",verified:""},
+    {title:"Electrified hardware coordination",category:"Door Hardware",summary:"Checklist for power, access control and fire alarm interfaces on every schedule review.",sources:["Your corrections"],updated:"2026-09-12",verified:""},
+    {title:"Roof-to-wall air barrier transitions",category:"Building Enclosure",summary:"What has worked, what hasn't, and what to require in 07 27 26.",sources:["Your notes","Corvane installation guide"],updated:"2026-10-01",verified:""},
+    {title:"Lakeshore continuous hinge guide spec",category:"Guide Specs",summary:"08 71 00 outline in progress. Revising editor's note placement.",sources:["Lakeshore product catalog 2026"],updated:"2026-10-22",verified:""},
+    {title:"2026-10-06 Elm Street Lofts OAC 8",category:"Meetings",summary:"Decided on ceiling grid, 2 action items for you, 1 open question on sealant color.",sources:["OAC #8 notes (pasted)"],updated:"2026-10-06",verified:""},
+    {title:"Air barrier continuity at roof-to-wall",category:"Teaching Notes",summary:"Plain-language explanation for junior staff, with a real example from Riverside.",sources:["Roof-to-wall air barrier transitions"],updated:"2026-10-01",verified:""}
+  ],
+  lessons: [
+    {date:"2026-09-02",scope:"all",text:"Record the test method next to every performance value.",request:"R-0001"},
+    {date:"2026-09-05",scope:"client: Harbor & Vale",text:"Remove Related Sections paragraphs.",request:"R-0002"},
+    {date:"2026-09-05",scope:"all",text:"Write in streamlined imperative language. No \"shall.\"",request:"R-0002"},
+    {date:"2026-09-08",scope:"meeting notes",text:"List my action items first.",request:"R-0003"},
+    {date:"2026-09-12",scope:"door hardware",text:"Always flag electrified hardware for coordination with access control.",request:"R-0004"},
+    {date:"2026-09-17",scope:"code study",text:"Name the local code edition at the top of every worksheet.",request:"R-0005"},
+    {date:"2026-09-17",scope:"email",text:"Keep emails short and sign off with first name only.",request:"R-0006"},
+    {date:"2026-09-25",scope:"section: 08 71 00",text:"List approved equals alphabetically.",request:"R-0008"},
+    {date:"2026-09-30",scope:"client: Northline",text:"Use their review matrix with a response column.",request:"R-0009"},
+    {date:"2026-10-09",scope:"substitution review",text:"Check sealant compatibility on every air barrier substitution.",request:"R-0012"},
+    {date:"2026-10-23",scope:"guide specs",text:"Editor's notes go before each paragraph, not after.",request:"R-0015"}
+  ]
+};
+
+window.START_VIEW='how';
+</script>
+
+</head><body>
+<header>
+  <div class="sample" style="background:var(--accent-soft)"><div class="wrap"><a href="index.html">&larr; Back to the introduction</a> &nbsp;·&nbsp; <a href="quick-start.html">Quick Start</a> &nbsp;·&nbsp; <a href="setup.html">Setup Guide</a></div></div>
+  <div class="sample"><div class="wrap"><b>Sample data.</b> Everything here is fictional (projects, firms, products) to show how the dashboard works. Amy's real dashboard starts empty and fills as she works.</div></div>
+  <div class="wrap head">
+    <div class="brand">
+      <h1>Amy's Second Brain</h1>
+      <p id="updated"></p>
+    </div>
+    <nav aria-label="Views">
+      <a href="#requests" data-view="requests">My Requests</a>
+      <a href="#brain" data-view="brain">My Brain</a>
+      <a href="#how" data-view="how">How it works</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+  <section id="v-requests" aria-labelledby="h-req">
+    <h2 id="h-req">My Requests</h2>
+    <p class="lede">Everything you've asked your second brain to do, and where each one stands. Items marked "Waiting on you" have a draft ready for your review.</p>
+    <div class="stats" id="stats"></div>
+    <div class="trend" id="trend"></div>
+    <div class="bar" id="reqFilters" role="group" aria-label="Filter requests"></div>
+    <div class="list" id="reqList"></div>
+  </section>
+
+  <section id="v-brain" aria-labelledby="h-brain" hidden>
+    <h2 id="h-brain">My Brain</h2>
+    <p class="lede">Everything your second brain knows, grouped by kind. Every item shows where it came from. Data older than two years is flagged so you know to check it.</p>
+    <div class="bar">
+      <input type="search" id="brainSearch" placeholder="Search products, clients, sections…" aria-label="Search the brain">
+    </div>
+    <div class="bar" id="brainFilters" role="group" aria-label="Filter by kind"></div>
+    <div id="brainGroups"></div>
+    <div class="group">
+      <div class="group-h"><h3>What you've taught it</h3><span class="c" id="lessonCount"></span></div>
+      <ul class="lessons" id="lessonList"></ul>
+    </div>
+  </section>
+
+  <section id="v-how" aria-labelledby="h-how" hidden>
+    <h2 id="h-how">How it works</h2>
+    <p class="lede">Your second brain is a folder on your computer that Claude keeps organized, only when you ask. It learns from your corrections, so it gets closer to right over time.</p>
+    <ol class="rules">
+      <li><h3>It's yours alone</h3><p>It lives on your computer and runs on your own Claude account. Matt set it up but can't see, change or share anything in it. Training on your chats is switched off in your Claude privacy settings.</p></li>
+      <li><h3>It only does what you ask</h3><p>It never starts work on its own. Before changing anything, it tells you the plan and waits for your OK. It never sends, shares or deletes.</p></li>
+      <li><h3>Expect the first try to be wrong</h3><p>Everything it makes is a draft from a new assistant. Your corrections are how it learns.</p></li>
+      <li><h3>The goal: no changes needed</h3><p>A win is when you review a draft and approve it as is. The win count on My Requests shows the trend.</p></li>
+      <li><h3>You're the professional</h3><p>For codes, fire ratings and life safety it shows what's in your files, with sources. Final judgment is yours.</p></li>
+      <li><h3>You own it, no strings</h3><p>Nothing to pay anyone beyond your own Claude plan. Want it to work differently or do something new? Just ask, and it changes itself after your OK.</p></li>
+      <li><h3>Help is always there</h3><p>Ask "How do I…?" for step-by-step instructions. Can't find a button? Drop a screenshot into the chat and it will point to it.</p></li>
+    </ol>
+
+    <div class="eyebrow">Every request follows the same loop</div>
+    <div class="loop" id="loop"></div>
+
+    <div class="eyebrow" style="margin-bottom:8px">Example: a substitution request, start to finish</div>
+    <div class="walk">
+      <ol class="steps" id="steps"></ol>
+      <div>
+        <div class="chat" id="chat" aria-live="polite"></div>
+        <div class="nav-steps">
+          <button class="btn" id="prev" type="button">Back</button>
+          <button class="btn primary" id="next" type="button">Next step</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var D = window.BRAIN_DATA || {requests:[],brain:[],lessons:[],updated:""};
+  var R = D.requests||[], B = D.brain||[], L = D.lessons||[];
+  function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+  function fmt(d){if(!d)return "";var p=d.split("-");var m=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+p[1]-1];return m+" "+(+p[2])+", "+p[0]}
+  document.getElementById("updated").textContent = D.updated ? "Last updated "+fmt(D.updated) : "Waiting for Claude to add data";
+
+  /* ---------- views ---------- */
+  var views=["requests","brain","how"];
+  function show(){
+    var v=(location.hash||"").slice(1); if(views.indexOf(v)<0) v=(window.START_VIEW||"requests");
+    views.forEach(function(x){document.getElementById("v-"+x).hidden = x!==v});
+    document.querySelectorAll("nav a").forEach(function(a){a.toggleAttribute("aria-current",a.dataset.view===v); if(a.dataset.view===v)a.setAttribute("aria-current","page")});
+  }
+  window.addEventListener("hashchange",show); show();
+
+  /* ---------- requests ---------- */
+  var ST={"Gathering sources":["p-gather","Gathering sources"],"Ready for review":["p-review","Waiting on you"],"Changes requested":["p-changes","Revising"],"Approved":["p-approved","Approved"]};
+  var approved=R.filter(function(r){return r.status==="Approved"});
+  var wins=approved.filter(function(r){return r.firstTryWin});
+  var waiting=R.filter(function(r){return r.status==="Ready for review"});
+  var open=R.filter(function(r){return r.status!=="Approved"});
+  document.getElementById("stats").innerHTML=[
+    ["you","Waiting on you",waiting.length,"drafts to review"],
+    ["","In progress",open.length-waiting.length,"gathering or revising"],
+    ["","Approved",approved.length,"all time"],
+    ["win","No changes needed",approved.length?Math.round(wins.length/approved.length*100)+"%":"–",wins.length+" of "+approved.length+" approved drafts"]
+  ].map(function(s){return '<div class="stat '+s[0]+'"><span class="eyebrow">'+s[1]+'</span><span class="v">'+s[2]+'</span><span class="rounds">'+s[3]+'</span></div>'}).join("");
+
+  (function trend(){
+    var el=document.getElementById("trend");
+    if(!approved.length){el.innerHTML='<p><strong>No approved drafts yet.</strong> Each one you approve shows up here as a mark, green if it needed no changes. Watch the green fill in as your second brain learns.</p>';return}
+    var seq=approved.slice().sort(function(a,b){return (a.approved||a.date)<(b.approved||b.date)?-1:1});
+    var half=Math.ceil(seq.length/2), a=seq.slice(0,half), b=seq.slice(half);
+    var wa=a.filter(function(r){return r.firstTryWin}).length, wb=b.filter(function(r){return r.firstTryWin}).length;
+    var maxC=Math.max(1,Math.max.apply(null,seq.map(function(r){return r.changes||0})));
+    var w=26,gap=6,H=72,base=H-18,unit=(base-8)/maxC, W=seq.length*(w+gap);
+    var bars=seq.map(function(r,i){
+      var x=i*(w+gap), c=r.changes||0;
+      if(r.firstTryWin) return '<rect x="'+x+'" y="'+(base-10)+'" width="'+w+'" height="10" rx="2" fill="var(--good)"><title>'+esc(r.id+": "+r.task+" — approved, no changes")+'</title></rect>';
+      var h=Math.max(6,c*unit);
+      return '<rect x="'+x+'" y="'+(base-h)+'" width="'+w+'" height="'+h+'" rx="2" fill="var(--warn)" opacity=".85"><title>'+esc(r.id+": "+r.task+" — "+c+" round"+(c===1?"":"s")+" of changes")+'</title></rect>';
+    }).join("");
+    var labels=seq.map(function(r,i){return '<text x="'+(i*(w+gap)+w/2)+'" y="'+(H-4)+'" text-anchor="middle" font-size="9" font-family="IBM Plex Mono, monospace" fill="var(--muted)">'+esc(r.id.replace("R-",""))+'</text>'}).join("");
+    var msg = b.length ? 'Earlier drafts: <strong>'+wa+' of '+a.length+'</strong> approved with no changes. Recent drafts: <strong>'+wb+' of '+b.length+'</strong>.' : '';
+    el.innerHTML='<div><span class="eyebrow">First-draft results, oldest to newest</span><p>'+msg+' Taller amber bars needed more rounds of changes.</p></div>'+
+      '<div class="legend"><span><i style="background:var(--good)"></i>No changes needed</span><span><i style="background:var(--warn)"></i>Rounds of changes</span></div>'+
+      '<div class="strip"><svg width="'+W+'" height="'+H+'" viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Approved drafts in order; green means approved with no changes">'+
+      '<line x1="0" x2="'+W+'" y1="'+base+'" y2="'+base+'" stroke="var(--line)"/>'+bars+labels+'</svg></div>';
+  })();
+
+  var rf="all";
+  var RF=[["all","All",function(){return true}],["you","Waiting on you",function(r){return r.status==="Ready for review"}],["prog","In progress",function(r){return r.status==="Gathering sources"||r.status==="Changes requested"}],["done","Approved",function(r){return r.status==="Approved"}]];
+  function drawReqFilters(){
+    document.getElementById("reqFilters").innerHTML=RF.map(function(f){return '<button class="chip" type="button" data-f="'+f[0]+'" aria-pressed="'+(rf===f[0])+'">'+f[1]+'<span class="c">'+R.filter(f[2]).length+'</span></button>'}).join("");
+  }
+  function list(items){return items&&items.length?'<ul>'+items.map(function(s){return '<li>'+esc(s)+'</li>'}).join("")+'</ul>':'<div class="none">None</div>'}
+  function drawReqs(){
+    drawReqFilters();
+    var fn=RF.filter(function(f){return f[0]===rf})[0][2];
+    var items=R.filter(fn).slice().sort(function(a,b){return a.id<b.id?1:-1});
+    var el=document.getElementById("reqList");
+    if(!R.length){el.innerHTML='<div class="empty">Nothing yet. Ask your second brain to do something, and it will show up here.</div>';return}
+    if(!items.length){el.innerHTML='<div class="empty">No requests in this group.</div>';return}
+    el.innerHTML=items.map(function(r){
+      var s=ST[r.status]||["p-gather",r.status];
+      var rounds = r.status==="Approved" ? (r.firstTryWin?'<span class="rounds win">No changes needed</span>':'<span class="rounds">'+r.changes+' round'+(r.changes===1?'':'s')+' of changes</span>') : (r.changes?'<span class="rounds">'+r.changes+' round'+(r.changes===1?'':'s')+' so far</span>':'');
+      var where=[r.project,r.client].filter(Boolean).join(" · ");
+      return '<details class="req"><summary><span class="id">'+esc(r.id)+'</span><span class="t">'+esc(r.task)+'</span>'+
+        '<span class="meta"><span>'+esc(fmt(r.date))+'</span><span>'+esc(r.type)+'</span>'+(where?'<span>'+esc(where)+'</span>':'')+'</span>'+
+        '<span class="right"><span class="pill '+s[0]+'">'+esc(s[1])+'</span>'+rounds+'</span></summary>'+
+        '<div class="detail"><div><span class="eyebrow">Sources used</span>'+list(r.sourcesUsed)+'</div>'+
+        '<div><span class="eyebrow">Sources you added</span>'+list(r.sourcesAdded)+'</div>'+
+        '<div><span class="eyebrow">What it learned</span>'+list(r.lessons)+'</div>'+
+        '<div><span class="eyebrow">Draft</span><div class="mono">'+esc(r.output||"—")+'</div>'+(r.approved?'<div class="rounds">Approved '+esc(fmt(r.approved))+'</div>':'')+'</div></div></details>';
+    }).join("");
+  }
+  document.getElementById("reqFilters").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;rf=b.dataset.f;drawReqs()});
+  drawReqs();
+
+  /* ---------- brain ---------- */
+  var ORDER=["Clients","Projects","Spec Sections","Products","Manufacturers","Standards & Codes","Door Hardware","Building Enclosure","Guide Specs","People & Firms","Meetings","Topics","Teaching Notes","Answers"];
+  var cats=ORDER.filter(function(c){return B.some(function(b){return b.category===c})}).concat(B.map(function(b){return b.category}).filter(function(c,i,a){return ORDER.indexOf(c)<0&&a.indexOf(c)===i}));
+  var bf="all", q="";
+  var now=new Date(D.updated||Date.now());
+  function stale(d){if(!d)return false;var t=new Date(d);return (now-t)/864e5>730}
+  function drawBrain(){
+    document.getElementById("brainFilters").innerHTML=['<button class="chip" type="button" data-c="all" aria-pressed="'+(bf==="all")+'">Everything<span class="c">'+B.length+'</span></button>'].concat(cats.map(function(c){return '<button class="chip" type="button" data-c="'+esc(c)+'" aria-pressed="'+(bf===c)+'">'+esc(c)+'<span class="c">'+B.filter(function(b){return b.category===c}).length+'</span></button>'})).join("");
+    var ql=q.toLowerCase();
+    var match=function(b){return (bf==="all"||b.category===bf)&&(!ql||(b.title+" "+b.summary+" "+(b.sources||[]).join(" ")).toLowerCase().indexOf(ql)>=0)};
+    var el=document.getElementById("brainGroups");
+    if(!B.length){el.innerHTML='<div class="list"><div class="empty">Your brain is empty for now. It fills up as you work: each time you ask for something, your second brain will ask whether there\'s anything it should read first.</div></div>';return}
+    var html=cats.map(function(c){
+      var items=B.filter(function(b){return b.category===c&&match(b)});
+      if(!items.length)return "";
+      return '<div class="group"><div class="group-h"><h3>'+esc(c)+'</h3><span class="c">'+items.length+'</span></div><div class="brain-grid">'+items.map(function(b){
+        var t=esc(b.title).replace(/^(\d{2} \d{2} \d{2})/,'<span class="mono">$1</span>');
+        return '<div class="card"><h3>'+t+'</h3><p>'+esc(b.summary)+'</p>'+
+          ((b.sources&&b.sources.length)?'<div class="src">From <b>'+b.sources.map(esc).join('</b>, <b>')+'</b></div>':'<div class="src">No source yet</div>')+
+          '<div class="dates"><span>Updated '+esc(fmt(b.updated))+'</span>'+(b.verified?(stale(b.verified)?'<span class="stale">Data from '+esc(fmt(b.verified))+'. Check for newer</span>':'<span>Checked '+esc(fmt(b.verified))+'</span>'):'')+'</div></div>';
+      }).join("")+'</div></div>';
+    }).join("");
+    el.innerHTML=html||'<div class="list"><div class="empty">Nothing matches that search.</div></div>';
+  }
+  document.getElementById("brainFilters").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;bf=b.dataset.c;drawBrain()});
+  document.getElementById("brainSearch").addEventListener("input",function(e){q=e.target.value;drawBrain()});
+  drawBrain();
+  document.getElementById("lessonCount").textContent=L.length+" lesson"+(L.length===1?"":"s");
+  document.getElementById("lessonList").innerHTML=L.length?L.slice().sort(function(a,b){return a.date<b.date?1:-1}).map(function(l){return '<li><span class="d">'+esc(fmt(l.date))+'</span><span><span class="scope">'+esc(l.scope)+'</span>'+esc(l.text)+(l.request?' <span class="rounds">('+esc(l.request)+')</span>':'')+'</span></li>'}).join(""):'<li><span class="d"></span><span class="rounds">No lessons yet. Each correction you make during a review gets saved here and used next time.</span></li>';
+
+  /* ---------- loop diagram ---------- */
+  (function(){
+    var s=[["You ask","in your own words"],["It checks","what it already knows"],["It asks","for anything else to read"],["It drafts","and waits for you"],["You review","approve or correct"],["It learns","saves each lesson"]];
+    var W=900,H=170,bw=128,bh=58,gx=(W-6*bw)/5,y=30,out='';
+    s.forEach(function(t,i){var x=i*(bw+gx);
+      out+='<rect x="'+x+'" y="'+y+'" width="'+bw+'" height="'+bh+'" rx="8" fill="'+(i===4?'var(--accent-soft)':'var(--surface)')+'" stroke="'+(i===4?'var(--accent)':'var(--line)')+'"/>'+
+      '<text x="'+(x+bw/2)+'" y="'+(y+25)+'" text-anchor="middle" font-family="Archivo, Arial, sans-serif" font-weight="600" font-size="14" fill="var(--ink)">'+t[0]+'</text>'+
+      '<text x="'+(x+bw/2)+'" y="'+(y+43)+'" text-anchor="middle" font-family="IBM Plex Sans, Arial, sans-serif" font-size="11" fill="var(--muted)">'+t[1]+'</text>';
+      if(i<5)out+='<path d="M'+(x+bw+4)+' '+(y+bh/2)+' H'+(x+bw+gx-6)+'" stroke="var(--muted)" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>';
+    });
+    var x0=bw/2,x5=5*(bw+gx)+bw/2,yb=y+bh;
+    out+='<path d="M'+x5+' '+(yb+4)+' V'+(yb+34)+' H'+x0+' V'+(yb+10)+'" stroke="var(--accent)" stroke-width="1.5" fill="none" stroke-dasharray="4 4" marker-end="url(#ah2)"/>'+
+      '<text x="'+(W/2)+'" y="'+(yb+52)+'" text-anchor="middle" font-family="IBM Plex Sans, Arial, sans-serif" font-size="12" fill="var(--accent)">Next time, the lessons are applied before the first draft</text>';
+    document.getElementById("loop").innerHTML='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="The request loop: you ask, it checks what it knows, asks for sources, drafts, you review, it learns, and lessons feed the next request"><defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--muted)"/></marker><marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="var(--accent)"/></marker></defs>'+out+'</svg>';
+  })();
+
+  /* ---------- walkthrough ---------- */
+  var W=[
+    {s:"You ask",m:[["amy","The contractor sent a substitution request for the air barrier on Riverside Library. Can you compare it to what we specified?"]],n:"Logged as a new request. Status: Gathering sources."},
+    {s:"It checks what it knows",m:[["cl","I have the Corvane AirSeal 40 data sheet from 2025, your 07 27 26 section for this project, and one lesson: put warranty differences in their own row. I don't have the substitute's data sheet or its air barrier assembly test report (ASTM E2357)."],["cl","Is there anything else I should read first to get this right? You can drop it in your Inbox."]],n:"It tells you what it has and names the gaps that matter, before doing any work."},
+    {s:"You add sources",m:[["amy","I put their data sheet and test report in the Inbox."],["cl","Thanks. I'll file 2 items: a new page for Brightwall VaporGuard SA, and an update to the 07 27 26 page for this project. OK?"],["amy","OK."]],n:"Nothing is filed until you say OK. The new sources show up under My Brain."},
+    {s:"It drafts",m:[["cl","Draft comparison is ready: 9 properties side by side. Two gaps: the assembly test was run at a lower pressure than we specified, and the warranty excludes labor. Sources are cited in each row."],["cl","What would you change?"]],n:"Status: Waiting on you. The draft is saved in your Outputs folder."},
+    {s:"You review",m:[["amy","Add a row for sealant compatibility. They don't list our joint sealant."],["cl","Added, and flagged as missing from their submittal. Should I check sealant compatibility on every air barrier substitution from now on?"],["amy","Yes, every time."]],n:"One round of changes. It asks whether a correction should become a standing rule."},
+    {s:"It learns",m:[["cl","Saved as a lesson for air barrier substitutions. Request approved after 1 round of changes."]],n:"The lesson now appears under My Brain → What you've taught it. On the next air barrier substitution it's applied before the first draft, and that one gets approved with no changes."}
+  ];
+  var cur=0, stepsEl=document.getElementById("steps"), chat=document.getElementById("chat");
+  function drawWalk(){
+    stepsEl.innerHTML=W.map(function(w,i){return '<li><button type="button" data-i="'+i+'"'+(i===cur?' aria-current="step"':'')+'>'+(i+1)+'. '+esc(w.s)+'</button></li>'}).join("");
+    var w=W[cur];
+    chat.innerHTML=w.m.map(function(m){return '<div class="msg '+m[0]+'"><span class="who">'+(m[0]==="amy"?"Amy":"Second brain")+'</span>'+esc(m[1])+'</div>'}).join("")+'<div class="note">'+esc(w.n)+'</div>';
+    document.getElementById("prev").disabled=cur===0;
+    document.getElementById("next").disabled=cur===W.length-1;
+  }
+  stepsEl.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;cur=+b.dataset.i;drawWalk()});
+  document.getElementById("prev").addEventListener("click",function(){if(cur>0){cur--;drawWalk()}});
+  document.getElementById("next").addEventListener("click",function(){if(cur<W.length-1){cur++;drawWalk()}});
+  drawWalk();
+})();
+</script>
+
+</body></html>

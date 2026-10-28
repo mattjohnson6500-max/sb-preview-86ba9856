@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Meet Your Second Brain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F3F6F8;--surface:#FFFFFF;--ink:#16202B;--muted:#5A6774;--line:#D9E0E6;--accent:#2C5A86;--accent-soft:#E2EBF4;
+--display:"Archivo","Helvetica Neue",Arial,sans-serif;--body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif}
+@media (prefers-color-scheme: dark){:root{--bg:#0E1317;--surface:#161E25;--ink:#E5EBF0;--muted:#94A2AF;--line:#28333D;--accent:#86B2DD;--accent-soft:#1B2B3A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+header{background:var(--surface);border-bottom:1px solid var(--line)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.top{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;justify-content:space-between;padding-block:14px}
+.top b{font-family:var(--display);font-size:1.05rem}
+nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}
+nav a{color:var(--muted);text-decoration:none} nav a[aria-current]{color:var(--ink);font-weight:600}
+main{padding-block:32px 72px}
+h1{font-family:var(--display);font-size:2.1rem;line-height:1.15;margin:0 0 12px;text-wrap:balance}
+h2{font-family:var(--display);font-size:1.35rem;margin:44px 0 10px;padding-top:20px;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:.94rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:block;overflow-x:auto}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-top:1px solid var(--line)}
+th{background:var(--accent-soft);border-top:0} thead:empty, th:empty{display:none}
+li{margin-bottom:6px} blockquote{margin:8px 0;padding:10px 16px;background:var(--surface);border-left:3px solid var(--accent);border-radius:4px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+.btn{display:inline-block;background:var(--ink);color:var(--surface);text-decoration:none;font-weight:600;padding:10px 18px;border-radius:6px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.steps-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.steps-row span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:.9rem;font-weight:500}
+.steps-row span:not(:last-child)::after{content:" →";color:var(--muted)}
+.steps-row .hi{border-color:var(--accent);background:var(--accent-soft)}
+footer{color:var(--muted);font-size:.85rem;padding-block:24px;border-top:1px solid var(--line)}
+</style></head><body>
+<header><div class="wrap top"><b>Amy's Second Brain</b><nav><a href="index.html" aria-current=page>Introduction</a><a href="demo.html">Demo</a><a href="quick-start.html">Quick Start</a><a href="setup.html">Setup Guide</a></nav></div></header>
+<main class="wrap">
+<h1>Meet Your Second Brain</h1>
+<p>An introduction for Amy Baker. Read this before you install anything. It explains what a second brain is, what it could do for your practice, and the rules it follows, so you can decide whether it's worth trying.</p>
+<p class="cta"><a class="btn" href="demo.html">Open the demo</a> <a class="btn ghost" href="quick-start.html">One-page Quick Start</a></p>
+
+<h2>What it is</h2>
+<p>A second brain is a private assistant that remembers your work for you. It's a folder on your own computer, plus Claude, the AI assistant, working inside that folder.</p>
+<p>You talk to it by typing or speaking, the way you'd talk to a sharp new colleague. You give it real work: "Compare this substitution to what we specified," or "Check this hardware schedule against the spec." It drafts the work, you review it, and it learns from your corrections.</p>
+<p>What makes it different from just chatting with an AI is that <strong>it keeps what it learns.</strong> Product data, client preferences, decisions from meetings, and every correction you make are stored as tidy, linked notes in your folder. Next time, it starts from all of that instead of from scratch.</p>
+<p><strong>What it isn't</strong></p>
+<ul>
+<li>It isn't a new program to learn. You just talk to it.</li>
+<li>It isn't a database you have to fill up first. It grows one real task at a time.</li>
+<li>It isn't a decision-maker. It drafts and organizes, and you decide.</li>
+<li>It isn't connected to anyone else. It's yours.</li>
+</ul>
+<h2>What it could do for you</h2>
+<p>These are examples of things you'd simply ask for, in your own words. Each one gives you a draft to review, never a final answer.</p>
+<table>
+<thead>
+<tr>
+<th>You say</th>
+<th>You get back</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>"The contractor sent a substitution for the air barrier. Compare it to what we specified."</td>
+<td>A side-by-side table of the two products, with gaps flagged (test pressure, warranty terms, compatibility) and every value tied to its source document</td>
+</tr>
+<tr>
+<td>"Check this hardware schedule against 08 71 00."</td>
+<td>A short list of conflicts: functions vs. door use, fire-rated openings, egress, accessibility, electrified hardware</td>
+</tr>
+<tr>
+<td>"Start a code study for the library project."</td>
+<td>A worksheet with the code edition named, filled in only from your files and marked "to verify" everywhere else</td>
+</tr>
+<tr>
+<td>"Here are my notes from today's OAC meeting."</td>
+<td>Decisions, your action items, and open questions, filed with the project</td>
+</tr>
+<tr>
+<td>"Log this RFI on Elm Street."</td>
+<td>A new row in the project's CA log, linked to the spec section</td>
+</tr>
+<tr>
+<td>"Start a guide spec for this manufacturer's hinges."</td>
+<td>A 3-part draft with editor's notes, plus a list of questions for the manufacturer</td>
+</tr>
+<tr>
+<td>"Remember that this client doesn't use Related Sections."</td>
+<td>Applied automatically to every future draft for that client</td>
+</tr>
+<tr>
+<td>"Turn that into a teaching note for junior staff."</td>
+<td>A plain-language explanation you can reuse for mentoring or a talk</td>
+</tr>
+</tbody>
+</table>
+<p>Over time it builds a picture of your clients, projects, products, manufacturers and standards, so you stop re-explaining the same things.</p>
+<h2>How a request works</h2>
+<div class="steps-row"><span>You ask</span><span>It checks what it knows</span><span>It asks for anything else to read</span><span>It drafts, after your OK</span><span class="hi">You review</span><span>It learns</span></div>
+
+<p>Every task follows this loop. Nothing is filed or changed until you say OK, and each correction you make at the review step is saved, so the next draft starts closer to right. The <a href="demo.html">demo</a> walks through a real example, step by step.</p>
+<h2>The ground rules</h2>
+<p>These are built into how it works. They're also the first thing it explains when you open it.</p>
+<ol>
+<li><strong>You own it, with no strings attached.</strong> It's a folder on your computer and runs on your own Claude account. Matt set it up, but he has no access to it. He can't see, change or share anything in it. You pay nothing to anyone beyond your own Claude plan.</li>
+<li><strong>You have total control.</strong> Want it to work differently, track something new, or stop doing something? Just ask, in plain words. It explains the change, waits for your OK, and then changes itself. You can undo any change the same way.</li>
+<li><strong>It only does what you ask.</strong> It never starts work on its own. Before it files or changes anything, it tells you the plan and waits for your OK. It never sends, shares or deletes anything.</li>
+<li><strong>Expect the first try to be wrong.</strong> Treat every draft like one from a capable new assistant on their first day. Your corrections are how it learns, and it writes each one down so you never have to make the same correction twice.</li>
+<li><strong>The goal is "no changes needed."</strong> A win is when you review a draft and approve it as is. Your dashboard counts these, so you can see it improving.</li>
+<li><strong>You're the professional.</strong> For codes, fire ratings and life safety, it shows you what's in your files, with sources. Final judgment is always yours.</li>
+<li><strong>You never have to figure things out alone.</strong> Ask "How do I…?" and it walks you through one step at a time. Can't find a button? Take a screenshot, drop it into the chat, and it will point to exactly where to click.</li>
+</ol>
+<p><strong>About privacy.</strong> What you ask Claude to work on is processed by Anthropic, the company that makes Claude, under your own account's privacy settings. During setup, you switch off the setting that allows your chats to be used to train AI models. If your client contracts limit what you can share with outside tools, you decide what goes in. For stronger contractual protection, Anthropic's business plans (Team and Enterprise) are not used for training by default.</p>
+<h2>What it takes</h2>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Cost</strong></td>
+<td>Nothing beyond a paid Claude plan (Pro or higher). No other software to buy.</td>
+</tr>
+<tr>
+<td><strong>Computer</strong></td>
+<td>A Mac or Windows computer with the free Claude desktop app</td>
+</tr>
+<tr>
+<td><strong>Setup time</strong></td>
+<td>About 20 minutes, with a step-by-step guide. Claude can walk you through any step.</td>
+</tr>
+<tr>
+<td><strong>Learning curve</strong></td>
+<td>None to speak of. If you can type or talk, you can use it.</td>
+</tr>
+<tr>
+<td><strong>Daily effort</strong></td>
+<td>Only what you choose. It works when you ask, and waits otherwise.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>What it can't do (yet)</strong></p>
+<ul>
+<li>It doesn't work on its own in the background or check your email unless you set that up.</li>
+<li>Your folder lives on your computer, so filing happens at your desk. From your phone you can save files into it if it's in iCloud or OneDrive.</li>
+<li>It can be wrong, especially at first. That's why everything is a draft and every fact shows its source.</li>
+<li>It isn't a substitute for your professional judgment, codes or the manufacturer's current literature.</li>
+</ul>
+<h2>Common questions</h2>
+<p><strong>Do I have to load all my files first?</strong>
+No. You start with nothing. Each time you ask for something, it tells you what it already knows and asks if there's anything else it should read. You drop in just those files.</p>
+<p><strong>What if it gets something wrong?</strong>
+It will, especially early on. Tell it what's wrong in plain words. It fixes the draft, asks whether to do it that way every time, and remembers.</p>
+<p><strong>Can Matt see my work?</strong>
+No. He built the starting folder and handed it over. It runs on your account, on your computer, and nothing connects back to him.</p>
+<p><strong>Can it send emails or share things for me?</strong>
+No. It drafts emails for you to send yourself. It never sends, shares, posts or deletes anything.</p>
+<p><strong>What if I want it to do something new?</strong>
+Ask. For example: "Can you also keep a list of warranty terms for every product?" It explains the change, you say OK, and it's done.</p>
+<p><strong>What if I get stuck?</strong>
+Ask "How do I…?" and it walks you through one step at a time. Or take a screenshot and drop it into the chat. It will tell you exactly where to click.</p>
+<p><strong>What happens if I stop using it?</strong>
+Everything stays in your folder as ordinary files you can open, keep or delete. Nothing is locked away.</p>
+<p><strong>Can I see everything it knows?</strong>
+Yes. Your dashboard has a "My Brain" view with every item it knows and where each one came from, plus a list of everything you've taught it.</p>
+<h2>Deciding whether to try it</h2>
+<ol>
+<li><strong>Look at the <a href="demo.html">demo</a>.</strong> It's a sample dashboard filled with fictional projects, showing a few weeks of requests, what the brain learned, and an example of a substitution request from start to finish. Nothing to install.</li>
+<li><strong>Read the one-page <a href="quick-start.html">Quick Start</a>.</strong> It shows the handful of things you'd actually say.</li>
+<li><strong>If it looks useful, follow the <a href="setup.html">Setup Guide</a></strong> and <a href="Amy-Second-Brain.zip">download the starter folder</a>. Setup takes about 20 minutes. Try one real task you'd do this week, and judge it by the result.</li>
+<li><strong>If it doesn't fit, nothing is lost.</strong> Delete the folder and you're done.</li>
+</ol></main><footer class="wrap">Preview for Amy Baker. The demo uses fictional sample data.</footer></body></html>

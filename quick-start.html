@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Second Brain Quick Start</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F3F6F8;--surface:#FFFFFF;--ink:#16202B;--muted:#5A6774;--line:#D9E0E6;--accent:#2C5A86;--accent-soft:#E2EBF4;
+--display:"Archivo","Helvetica Neue",Arial,sans-serif;--body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif}
+@media (prefers-color-scheme: dark){:root{--bg:#0E1317;--surface:#161E25;--ink:#E5EBF0;--muted:#94A2AF;--line:#28333D;--accent:#86B2DD;--accent-soft:#1B2B3A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+header{background:var(--surface);border-bottom:1px solid var(--line)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.top{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;justify-content:space-between;padding-block:14px}
+.top b{font-family:var(--display);font-size:1.05rem}
+nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}
+nav a{color:var(--muted);text-decoration:none} nav a[aria-current]{color:var(--ink);font-weight:600}
+main{padding-block:32px 72px}
+h1{font-family:var(--display);font-size:2.1rem;line-height:1.15;margin:0 0 12px;text-wrap:balance}
+h2{font-family:var(--display);font-size:1.35rem;margin:44px 0 10px;padding-top:20px;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:.94rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:block;overflow-x:auto}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-top:1px solid var(--line)}
+th{background:var(--accent-soft);border-top:0} thead:empty, th:empty{display:none}
+li{margin-bottom:6px} blockquote{margin:8px 0;padding:10px 16px;background:var(--surface);border-left:3px solid var(--accent);border-radius:4px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+.btn{display:inline-block;background:var(--ink);color:var(--surface);text-decoration:none;font-weight:600;padding:10px 18px;border-radius:6px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.steps-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.steps-row span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:.9rem;font-weight:500}
+.steps-row span:not(:last-child)::after{content:" →";color:var(--muted)}
+.steps-row .hi{border-color:var(--accent);background:var(--accent-soft)}
+footer{color:var(--muted);font-size:.85rem;padding-block:24px;border-top:1px solid var(--line)}
+</style></head><body>
+<header><div class="wrap top"><b>Amy's Second Brain</b><nav><a href="index.html">Introduction</a><a href="demo.html">Demo</a><a href="quick-start.html" aria-current=page>Quick Start</a><a href="setup.html">Setup Guide</a></nav></div></header>
+<main class="wrap">
+<h1>Quick Start</h1>
+<p>Connect your folder in the Claude app and say <strong>"Open my second brain."</strong> After that, just talk normally. These are examples, not commands to memorize.</p>
+<h2>What to say</h2>
+<table>
+<thead>
+<tr>
+<th>When you want to…</th>
+<th>Say something like…</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Start</td>
+<td>"Open my second brain."</td>
+</tr>
+<tr>
+<td>See what it can do</td>
+<td>"What can you do?" or "Give me the tour."</td>
+</tr>
+<tr>
+<td>Get a task done</td>
+<td>Just ask: "Compare this substitution to what we specified." It will tell you what it knows and ask if there's anything else to read first.</td>
+</tr>
+<tr>
+<td>Give it files to read</td>
+<td>Drop them in the <strong>Inbox</strong> folder and say "I put them in the Inbox."</td>
+</tr>
+<tr>
+<td>Approve a draft</td>
+<td>"Looks good" or "Approved."</td>
+</tr>
+<tr>
+<td>Correct a draft</td>
+<td>Say what's wrong: "Warranty should be its own row." It will ask whether to do it that way every time.</td>
+</tr>
+<tr>
+<td>Save a fact</td>
+<td>"Remember that our hardware rep is now Dana Ruiz."</td>
+</tr>
+<tr>
+<td>Find something</td>
+<td>"What do we know about fire-rated glazing?"</td>
+</tr>
+<tr>
+<td>Recall a decision</td>
+<td>"What did we decide about the roof on Fairview?"</td>
+</tr>
+<tr>
+<td>Capture a meeting</td>
+<td>"Here are my notes from today's OAC meeting…" (paste or talk)</td>
+</tr>
+<tr>
+<td>See everything</td>
+<td>"Show my dashboard," or double-click <strong>Dashboard.html</strong> in your folder</td>
+</tr>
+<tr>
+<td>Tidy up</td>
+<td>"Do a weekly checkup."</td>
+</tr>
+<tr>
+<td>Undo</td>
+<td>"Undo that."</td>
+</tr>
+</tbody>
+</table>
+<p>It always shows you the plan and waits for your OK before filing or changing anything. It never sends, shares or deletes.</p>
+<h2>When you're stuck, or want something different</h2>
+<p><strong>Ask for step-by-step help.</strong> "How do I connect my folder?" or "How do I open the dashboard?" It gives you one step at a time and waits for you to say "done."</p>
+<p><strong>Send a screenshot.</strong> Can't find a button? Take a picture of your screen and drop it into the chat. It will tell you exactly where to click.</p>
+<table>
+<thead>
+<tr>
+<th>On a Mac</th>
+<th>On Windows</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Press <strong>Shift + Command + 4</strong>, drag over the area, then drag the picture into the chat.</td>
+<td>Press <strong>Windows + Shift + S</strong>, drag over the area, then click in the chat and press <strong>Ctrl + V</strong>.</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Change how it works.</strong> It's yours, with no strings. Ask for anything: "Can you also track warranty terms?" or "Stop asking about sources for emails." It explains the change, waits for your OK, and you can undo it anytime.</p>
+<p><strong>Ask about privacy.</strong> "Who can see this?" It will explain plainly.</p></main><footer class="wrap">Preview for Amy Baker. The demo uses fictional sample data.</footer></body></html>

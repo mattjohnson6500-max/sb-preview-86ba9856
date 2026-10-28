@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Second Brain Setup Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#F3F6F8;--surface:#FFFFFF;--ink:#16202B;--muted:#5A6774;--line:#D9E0E6;--accent:#2C5A86;--accent-soft:#E2EBF4;
+--display:"Archivo","Helvetica Neue",Arial,sans-serif;--body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif}
+@media (prefers-color-scheme: dark){:root{--bg:#0E1317;--surface:#161E25;--ink:#E5EBF0;--muted:#94A2AF;--line:#28333D;--accent:#86B2DD;--accent-soft:#1B2B3A;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6}
+header{background:var(--surface);border-bottom:1px solid var(--line)}
+.wrap{max-width:760px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.top{display:flex;flex-wrap:wrap;gap:4px 20px;align-items:center;justify-content:space-between;padding-block:14px}
+.top b{font-family:var(--display);font-size:1.05rem}
+nav{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:.95rem}
+nav a{color:var(--muted);text-decoration:none} nav a[aria-current]{color:var(--ink);font-weight:600}
+main{padding-block:32px 72px}
+h1{font-family:var(--display);font-size:2.1rem;line-height:1.15;margin:0 0 12px;text-wrap:balance}
+h2{font-family:var(--display);font-size:1.35rem;margin:44px 0 10px;padding-top:20px;border-top:1px solid var(--line)}
+a{color:var(--accent)}
+table{border-collapse:collapse;width:100%;font-size:.94rem;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden;display:block;overflow-x:auto}
+th,td{text-align:left;vertical-align:top;padding:10px 14px;border-top:1px solid var(--line)}
+th{background:var(--accent-soft);border-top:0} thead:empty, th:empty{display:none}
+li{margin-bottom:6px} blockquote{margin:8px 0;padding:10px 16px;background:var(--surface);border-left:3px solid var(--accent);border-radius:4px}
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}
+.btn{display:inline-block;background:var(--ink);color:var(--surface);text-decoration:none;font-weight:600;padding:10px 18px;border-radius:6px}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.steps-row{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+.steps-row span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:.9rem;font-weight:500}
+.steps-row span:not(:last-child)::after{content:" →";color:var(--muted)}
+.steps-row .hi{border-color:var(--accent);background:var(--accent-soft)}
+footer{color:var(--muted);font-size:.85rem;padding-block:24px;border-top:1px solid var(--line)}
+</style></head><body>
+<header><div class="wrap top"><b>Amy's Second Brain</b><nav><a href="index.html">Introduction</a><a href="demo.html">Demo</a><a href="quick-start.html">Quick Start</a><a href="setup.html" aria-current=page>Setup Guide</a></nav></div></header>
+<main class="wrap">
+<h1>Setup Guide</h1>
+<p>About 20 minutes. Do these once, in order. If anything on screen looks a little different from what's described here, look for the closest match, since the Claude app gets updated often. From Step 5 on, you can ask Claude for help with anything, including by sending a screenshot.</p>
+<p class="cta"><a class="btn" href="Amy-Second-Brain.zip">Download the starter folder</a></p>
+
+<p><strong>What you need</strong></p>
+<ul>
+<li>A Mac or Windows computer</li>
+<li>A paid Claude plan (Pro or higher)</li>
+<li>The <strong>Amy's Second Brain</strong> starter folder (the download above)</li>
+</ul>
+<h2>Steps</h2>
+<ol>
+<li><strong>Install the Claude desktop app and check your privacy setting.</strong> Go to <a href="https://claude.com/download">claude.com/download</a>, install the app for your computer, and sign in with your own Claude account. Then open <strong>Settings</strong>, find <strong>Privacy</strong>, and turn <strong>off</strong> the option that lets your chats be used to improve Claude's models. Do this before you put anything in. Also, skip the thumbs up and thumbs down buttons on work chats, since those send the conversation to Anthropic as feedback.</li>
+<li><strong>Put the folder in place.</strong> Double-click the downloaded zip file to unzip it. Move the <strong>Amy's Second Brain</strong> folder into your <strong>Documents</strong> folder.<ul>
+<li>If your Documents folder is backed up by iCloud (Mac) or OneDrive (Windows), that's your backup taken care of.</li>
+<li>Make sure the files stay on your computer, not "in the cloud only." On a Mac, right-click the folder and choose <strong>Keep Downloaded</strong> if you see it. On Windows, right-click it and choose <strong>Always keep on this device</strong>.</li>
+</ul>
+</li>
+<li><strong>Connect the folder to Claude.</strong> Open the Claude app and start a new chat. Look for the option to add or choose a folder, usually a folder icon or an <strong>Add folder</strong> button near the message box. Pick <strong>Amy's Second Brain</strong> and click <strong>Allow</strong> when Claude asks for permission. Claude can only see this one folder.</li>
+<li>
+<p><strong>Tell Claude about the folder, once.</strong> In Claude's <strong>Settings</strong>, find the box for your personal preferences. Paste this in and save:</p>
+<blockquote>
+<p>When my "Amy's Second Brain" folder is connected, always read CLAUDE.md in that folder first and follow it.</p>
+</blockquote>
+</li>
+<li>
+<p><strong>Say hello.</strong> With your folder connected, type or say <strong>"Open my second brain."</strong> It explains the ground rules and offers a 2-minute tour. Ask it anything, like "What can you do?" or "Who can see this?" There's no questionnaire. It learns about you as you work.</p>
+</li>
+<li><strong>Try one real task.</strong> Pick something you'd do this week, like a substitution request or a hardware schedule check, and ask for it. When it asks if there's anything else to read, drop the relevant files in the <strong>Inbox</strong> folder. Review the draft, correct it, and approve it. Then double-click <strong>Dashboard.html</strong> to see it recorded.</li>
+</ol>
+<p><strong>Talking instead of typing:</strong> click the microphone button in the message box and speak. Replies are kept short so they work well out loud.</p>
+<h2>Your dashboard</h2>
+<p>Double-click <strong>Dashboard.html</strong> in your folder to open it in your web browser. It stays on your computer and updates every time Claude finishes something. It has three views: <strong>My Requests</strong> (everything you've asked for and what's waiting on you), <strong>My Brain</strong> (everything it knows, with sources, plus every lesson you've taught it), and <strong>How it works</strong>. You can also say <strong>"Show my dashboard"</strong> in chat. The <a href="demo.html">demo</a> shows what it looks like with a few weeks of sample work.</p>
+<h2>Optional extras</h2>
+<p><strong>Browsing your notes with Obsidian (free).</strong> If you'd ever like to look through your notes yourself, install Obsidian from obsidian.md, choose <strong>Open folder as vault</strong>, and pick <strong>Amy's Second Brain</strong>. It's purely for looking. You never have to use it.</p>
+<p><strong>From your phone.</strong> Filing happens at your desk. On the go, you can drop a file or photo into the <strong>Inbox</strong> folder through iCloud Drive or OneDrive on your phone, then say "I put something in the Inbox" when you're back.</p>
+<h2>If something goes wrong</h2>
+<table>
+<thead>
+<tr>
+<th>Problem</th>
+<th>Fix</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Claude says it can't see your files</td>
+<td>Start a new chat and connect the folder again (Step 3).</td>
+</tr>
+<tr>
+<td>Claude doesn't seem to follow the rules</td>
+<td>Say "Read CLAUDE.md first," then ask again.</td>
+</tr>
+<tr>
+<td>A file "won't open"</td>
+<td>Make sure it's fully downloaded to your computer (Step 2), then try again.</td>
+</tr>
+<tr>
+<td>An answer looks wrong</td>
+<td>Say "That's wrong" and give the correct fact. It fixes the note and records the lesson.</td>
+</tr>
+<tr>
+<td>You're stuck</td>
+<td>Ask "How do I…?" for one step at a time. Can't find a button? Take a screenshot (Mac: Shift + Command + 4; Windows: Windows + Shift + S) and drop it into the chat.</td>
+</tr>
+</tbody>
+</table>
+<p>You don't need to edit any files yourself. To change anything about how it works, just tell Claude.</p></main><footer class="wrap">Preview for Amy Baker. The demo uses fictional sample data.</footer></body></html>
